@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { MovieToCast } from './movies-to-casts.entity';
 import { MovieStatus } from './movies.types';
 
 @Entity()
@@ -17,4 +18,7 @@ export class Movie {
 
   @Column({ nullable: true })
   rating?: number;
+
+  @OneToMany(() => MovieToCast, (movieToCast) => movieToCast.movie)
+  movieToCasts: MovieToCast[];
 }
