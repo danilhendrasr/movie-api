@@ -52,7 +52,7 @@ describe('MoviesService', () => {
 
   describe('getAll()', () => {
     it('should return an array of movies', async () => {
-      const movies = await service.get();
+      const movies = await service.getAllMovies();
       expect(movies).toEqual(moviesArray);
     });
   });
@@ -60,7 +60,7 @@ describe('MoviesService', () => {
   describe('getOne()', () => {
     it('should return a single movie', async () => {
       const repoSpy = jest.spyOn(repository, 'findOneByOrFail');
-      expect(service.getOne(1)).resolves.toEqual(oneMovie);
+      expect(service.getOneMovie(1)).resolves.toEqual(oneMovie);
       expect(repoSpy).toBeCalledWith({ id: 1 });
     });
   });
@@ -68,14 +68,14 @@ describe('MoviesService', () => {
   describe('delete()', () => {
     it('should call delete with the passed value', async () => {
       const deleteSpy = jest.spyOn(repository, 'delete');
-      const retVal = await service.delete(1);
+      const retVal = await service.deleteMovie(1);
       expect(deleteSpy).toBeCalledWith(1);
       expect(retVal).toBeUndefined();
     });
 
     it('should reject the promise if movie repo throws error', async () => {
       const movieId = 2;
-      expect(service.delete(movieId)).rejects.toBeInstanceOf(Error);
+      expect(service.deleteMovie(movieId)).rejects.toBeInstanceOf(Error);
     });
   });
 });
