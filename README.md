@@ -8,23 +8,25 @@ A simple but well-organized movie API built using Nest.js and MySQL. Requirement
 - MySQL
 
 ### Steps
-1. Clone the repo
-2. Run the following to install dependencies
+1. Clone the repo.
+2. Run the following to install dependencies.
     ```bash
     pnpm install
     ```
-3. Run the dev server in watch mode
+3. Copy the `.env.example` file and rename it to `.env`, adjust the content according
+   to your database configurations.
+4. Run the dev server in watch mode.
     ```bash
     pnpm run start:dev
     ```
-4. Run the following if you want to seed the database with dummy data
+5. Run the following if you want to seed the database with dummy data.
     ```bash
     pnpm run seed
     ```
-5. The API will be accessible at http://localhost:3000, documentation is available at http://localhost:3000/docs.
+6. The API will be accessible at http://localhost:3000, documentation is available at http://localhost:3000/docs.
 
 ## Deploying
-Run the following to get the docker compose up and running
+Run the following to get the docker compose up and running.
 ```bash
 docker compose -d up
 ```
