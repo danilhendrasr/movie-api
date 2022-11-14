@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -7,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateMovieDTO } from './dto/create-movie.dto';
@@ -90,5 +92,20 @@ export class MoviesController {
   })
   async deleteMovie(@Param('id') id: number) {
     await this.moviesService.deleteMovie(id);
+  }
+
+  @Get(':id/casts')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiOperation({ summary: 'Get casts of a movie.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully got the records.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Movie with the given ID can't be found",
+  })
+  async getMovieCasts(@Param('id') id: number) {
+    return this.moviesService.getMovieCasts(id);
   }
 }

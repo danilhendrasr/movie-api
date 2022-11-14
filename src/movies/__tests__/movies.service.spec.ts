@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Cast } from 'src/casts/casts.entity';
 import { Repository } from 'typeorm';
 import { Movie } from '../movies.entity';
 import { MoviesService } from '../movies.service';
@@ -13,6 +14,13 @@ const moviesArray: Movie[] = [
   },
 ];
 
+const castsArray: Cast[] = [
+  {
+    id: 1,
+    name: 'Danil Hendra',
+  },
+];
+
 const oneMovie: Movie = {
   id: 1,
   name: 'The Girl On The Train',
@@ -22,7 +30,7 @@ const oneMovie: Movie = {
 
 describe('MoviesService', () => {
   let service: MoviesService;
-  let repository: Repository<Movie>;
+  let moviesRepository: Repository<Movie>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,11 +47,18 @@ describe('MoviesService', () => {
             }),
           },
         },
+        {
+          provide: getRepositoryToken(Cast),
+          useValue: {
+            find: jest.fn().mockResolvedValue(castsArray),
+            findOneByOrFail: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<MoviesService>(MoviesService);
-    repository = module.get<Repository<Movie>>(getRepositoryToken(Movie));
+    moviesRepository = module.get<Repository<Movie>>(getRepositoryToken(Movie));
   });
 
   it('should be defined', () => {
@@ -59,15 +74,22 @@ describe('MoviesService', () => {
 
   describe('getOne()', () => {
     it('should return a single movie', async () => {
-      const repoSpy = jest.spyOn(repository, 'findOneByOrFail');
+      const repoSpy = jest.spyOn(moviesRepository, 'findOneByOrFail');
       expect(service.getOneMovie(1)).resolves.toEqual(oneMovie);
       expect(repoSpy).toBeCalledWith({ id: 1 });
     });
   });
 
+  describe('getMovieCasts()', () => {
+    it('should return an array of casts', async () => {
+      const casts = await service.getMovieCasts(1);
+      expect(casts).toEqual(castsArray);
+    });
+  });
+
   describe('delete()', () => {
     it('should call delete with the passed value', async () => {
-      const deleteSpy = jest.spyOn(repository, 'delete');
+      const deleteSpy = jest.spyOn(moviesRepository, 'delete');
       const retVal = await service.deleteMovie(1);
       expect(deleteSpy).toBeCalledWith(1);
       expect(retVal).toBeUndefined();

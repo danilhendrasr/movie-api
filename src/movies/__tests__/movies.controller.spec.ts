@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Cast } from 'src/casts/casts.entity';
 import { MoviesController } from '../movies.controller';
 import { Movie } from '../movies.entity';
 import { MoviesService } from '../movies.service';
@@ -9,6 +10,13 @@ const moviesArray: Movie[] = [
     name: 'The Girl On The Train',
     rating: 3,
     language: 'english',
+  },
+];
+
+const castsArray: Cast[] = [
+  {
+    id: 1,
+    name: 'Danil Hendra',
   },
 ];
 
@@ -25,6 +33,7 @@ describe('MoviesController', () => {
   const serviceMocks: Record<keyof MoviesService, () => any> = {
     getAllMovies: jest.fn().mockResolvedValue(moviesArray),
     getOneMovie: jest.fn().mockResolvedValue(oneMovie),
+    getMovieCasts: jest.fn().mockResolvedValue(castsArray),
     updateMovie: jest.fn(),
     createNewMovie: jest.fn(),
     deleteMovie: jest.fn(),
@@ -58,6 +67,12 @@ describe('MoviesController', () => {
   describe('get one', () => {
     it('should return one movie', () => {
       expect(controller.getOneMovie(1)).resolves.toBe(oneMovie);
+    });
+  });
+
+  describe('get casts of a movie', () => {
+    it('should return an array of casts', () => {
+      expect(controller.getMovieCasts(1)).resolves.toBe(castsArray);
     });
   });
 
