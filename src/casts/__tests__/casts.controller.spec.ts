@@ -59,4 +59,10 @@ describe('CastsController', () => {
       expect(controller.getCasts()).resolves.toBe(castsArray);
     });
   });
+
+  describe('get one', () => {
+    it('should return one cast', () => {
+      expect(controller.getOneCast(1)).resolves.toBe(oneCast);
+    });
+  });
 });
