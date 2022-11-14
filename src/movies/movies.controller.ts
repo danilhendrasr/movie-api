@@ -1,5 +1,17 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateMovieDTO } from './dto/create-movie.dto';
+import { UpdateMovieDTO } from './dto/update-movie.dto';
+import { MoviesService } from './movies.service';
 
 @ApiTags('Movies')
 @Controller({
@@ -7,28 +19,76 @@ import { ApiTags } from '@nestjs/swagger';
   version: '1',
 })
 export class MoviesController {
+  constructor(private moviesService: MoviesService) {}
+
   @Get()
+  @ApiOperation({ summary: 'Get all movies.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully got the records.',
+  })
   async getMovies() {
-    return 'Get movies';
+    return this.moviesService.getAllMovies();
   }
 
-  @Get()
-  async getOneMovie() {
-    return 'Get one movie';
+  @Get(':id')
+  @ApiOperation({ summary: 'Get one movie by ID.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully got the record.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Movie with the given ID can't be found",
+  })
+  async getOneMovie(@Param('id') id: number) {
+    return this.moviesService.getOneMovie(id);
   }
 
-  @Patch()
-  async updateMovie() {
-    return 'Update a movie';
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a movie.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully updated the record.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Request body is not valid, please recheck.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Movie with the given ID can't be found",
+  })
+  async updateMovie(@Param('id') id: number, @Body() payload: UpdateMovieDTO) {
+    return this.moviesService.updateMovie(id, payload);
   }
 
   @Post()
-  async createMovie() {
-    return 'Create a movie';
+  @ApiOperation({ summary: 'Create a new movie.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Successfully created the record.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Request body is not valid, please recheck.',
+  })
+  async createMovie(@Body() payload: CreateMovieDTO) {
+    return this.moviesService.createNewMovie(payload);
   }
 
-  @Delete()
-  async deleteMovie() {
-    return 'Delete a movie';
+  @Delete(':id')
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Delete a new movie.' })
+  @ApiResponse({
+    status: 204,
+    description: 'The record has been successfully deleted.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Movie with the given ID can't be found",
+  })
+  async deleteMovie(@Param('id') id: number) {
+    await this.moviesService.deleteMovie(id);
   }
 }
