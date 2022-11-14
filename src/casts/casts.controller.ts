@@ -11,6 +11,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CastsService } from './casts.service';
 import { CreateCastDTO } from './dto/create-cast.dto';
+import { UpdateCastDTO } from './dto/update-cast.dto';
 
 @ApiTags('Casts')
 @Controller({
@@ -58,9 +59,22 @@ export class CastsController {
     return this.castsService.getMoviesOfACast(id);
   }
 
-  @Patch()
-  async updateCast() {
-    return 'Update a cast';
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update an existing cast.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Successfully updated the record.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Request body is not valid, please recheck.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'A cast with the given ID cannot be found.',
+  })
+  async updateCast(@Param('id') id: number, @Body() payload: UpdateCastDTO) {
+    return this.castsService.updateCast(id, payload);
   }
 
   @Post()

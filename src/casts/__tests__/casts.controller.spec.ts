@@ -82,6 +82,15 @@ describe('CastsController', () => {
     });
   });
 
+  describe('update a cast', () => {
+    it('should call update cast service with given payload', () => {
+      const updateData = { name: 'Admin' };
+      const updateMovieServiceSpy = jest.spyOn(castsService, 'updateCast');
+      controller.updateCast(1, updateData);
+      expect(updateMovieServiceSpy).toBeCalledWith(1, updateData);
+    });
+  });
+
   describe('delete a cast', () => {
     it('should call delete a cast service with given payload', () => {
       const createMovieServiceSpy = jest.spyOn(castsService, 'deleteCast');
