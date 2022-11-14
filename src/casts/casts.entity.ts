@@ -19,5 +19,5 @@ export class Cast {
   rating?: number;
 
   @OneToMany(() => MovieToCast, (movieToCast) => movieToCast.cast)
-  movieToCasts: MovieToCast[];
+  movieToCasts?: MovieToCast[];
 }
