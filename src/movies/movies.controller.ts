@@ -1,6 +1,5 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateMovieDTO } from './dto/create-movie.dto';
@@ -95,7 +93,6 @@ export class MoviesController {
   }
 
   @Get(':id/casts')
-  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Get casts of a movie.' })
   @ApiResponse({
     status: 200,
