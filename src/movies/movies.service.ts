@@ -22,15 +22,16 @@ export class MoviesService {
   }
 
   async createNewMovie(payload: Omit<Movie, 'id' | 'movieToCasts'>) {
-    const movie = await this.moviesRepository.insert(payload);
-    return movie;
+    return await this.moviesRepository.save(payload);
   }
 
   async updateMovie(id: number, payload: Partial<Movie>) {
-    await this.moviesRepository.findOneByOrFail({ id });
+    const foundMovie = await this.getOneMovie(id);
 
-    const movie = await this.moviesRepository.update(id, payload);
-    return movie;
+    return await this.moviesRepository.save({
+      ...foundMovie,
+      ...payload,
+    });
   }
 
   async deleteMovie(id: number) {
