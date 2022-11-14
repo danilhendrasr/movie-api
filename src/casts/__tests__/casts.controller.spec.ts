@@ -27,6 +27,7 @@ const oneCast: Cast = {
 
 describe('CastsController', () => {
   let controller: CastsController;
+  let castsService: CastsService;
   const castsServiceMock: Record<keyof CastsService, () => any> = {
     getCasts: jest.fn().mockResolvedValue(castsArray),
     getOneCast: jest.fn().mockResolvedValue(oneCast),
@@ -48,6 +49,7 @@ describe('CastsController', () => {
     }).compile();
 
     controller = module.get<CastsController>(CastsController);
+    castsService = module.get<CastsService>(CastsService);
   });
 
   it('should be defined', () => {
@@ -69,6 +71,14 @@ describe('CastsController', () => {
   describe('get movies of a cast', () => {
     it('should return an array of movies', () => {
       expect(controller.getMoviesOfACast(1)).resolves.toBe(moviesArray);
+    });
+  });
+
+  describe('create cast', () => {
+    it('should call create cast service with given payload', () => {
+      const createMovieServiceSpy = jest.spyOn(castsService, 'createNewCast');
+      controller.createCast(oneCast);
+      expect(createMovieServiceSpy).toBeCalledWith(oneCast);
     });
   });
 });

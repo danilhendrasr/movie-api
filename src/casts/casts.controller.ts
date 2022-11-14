@@ -1,6 +1,15 @@
-import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CastsService } from './casts.service';
+import { CreateCastDTO } from './dto/create-cast.dto';
 
 @ApiTags('Casts')
 @Controller({
@@ -54,8 +63,17 @@ export class CastsController {
   }
 
   @Post()
-  async createCast() {
-    return 'Create a cast';
+  @ApiOperation({ summary: 'Create a new cast.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Successfully created the record.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Request body is not valid, please recheck.',
+  })
+  async createCast(@Body() payload: CreateCastDTO) {
+    return this.castsService.createNewCast(payload);
   }
 
   @Delete()
