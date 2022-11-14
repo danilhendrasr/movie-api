@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -76,8 +77,18 @@ export class CastsController {
     return this.castsService.createNewCast(payload);
   }
 
-  @Delete()
-  async deleteCast() {
-    return 'Delete a cast';
+  @Delete(':id')
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Delete a cast.' })
+  @ApiResponse({
+    status: 204,
+    description: 'Successfully deleted the record.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'A cast with the given ID cannot be found.',
+  })
+  async deleteCast(@Param('id') id: number) {
+    return this.castsService.deleteCast(id);
   }
 }

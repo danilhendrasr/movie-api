@@ -81,4 +81,12 @@ describe('CastsController', () => {
       expect(createMovieServiceSpy).toBeCalledWith(oneCast);
     });
   });
+
+  describe('delete a cast', () => {
+    it('should call delete a cast service with given payload', () => {
+      const createMovieServiceSpy = jest.spyOn(castsService, 'deleteCast');
+      controller.deleteCast(1);
+      expect(createMovieServiceSpy).toBeCalledWith(1);
+    });
+  });
 });
