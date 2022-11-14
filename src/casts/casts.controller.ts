@@ -1,5 +1,6 @@
 import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CastsService } from './casts.service';
 
 @ApiTags('Casts')
 @Controller({
@@ -7,9 +8,16 @@ import { ApiTags } from '@nestjs/swagger';
   version: '1',
 })
 export class CastsController {
+  constructor(private castsService: CastsService) {}
+
   @Get()
+  @ApiOperation({ summary: 'Get casts.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully got the records.',
+  })
   async getCasts() {
-    return 'Get casts';
+    return this.castsService.getCasts();
   }
 
   @Get()

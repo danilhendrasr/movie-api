@@ -67,7 +67,7 @@ describe('CastsService', () => {
 
   describe('find()', () => {
     it('should return an array of casts', async () => {
-      const casts = await service.find();
+      const casts = await service.getCasts();
       expect(casts).toEqual(castsArray);
     });
   });
@@ -75,7 +75,7 @@ describe('CastsService', () => {
   describe('findOne()', () => {
     it('should return a single cast', async () => {
       const repoSpy = jest.spyOn(castsRepository, 'findOneByOrFail');
-      expect(service.findOne(1)).resolves.toEqual(oneCast);
+      expect(service.getOneCast(1)).resolves.toEqual(oneCast);
       expect(repoSpy).toBeCalledWith({ id: 1 });
     });
   });

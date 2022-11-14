@@ -12,7 +12,7 @@ export class CastsService {
     @InjectRepository(Movie) private moviesRepository: Repository<Movie>,
   ) {}
 
-  async find() {
+  async getCasts() {
     return await this.castsRepository.find();
   }
 
@@ -26,7 +26,7 @@ export class CastsService {
     });
   }
 
-  async findOne(id: number) {
+  async getOneCast(id: number) {
     return await this.castsRepository.findOneByOrFail({ id });
   }
 
