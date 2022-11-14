@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { MovieToCast } from 'src/movies/movies-to-casts.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -18,6 +19,7 @@ export class Cast {
   @Column({ nullable: true })
   rating?: number;
 
+  @Exclude()
   @OneToMany(() => MovieToCast, (movieToCast) => movieToCast.cast)
   movieToCasts?: MovieToCast[];
 }
