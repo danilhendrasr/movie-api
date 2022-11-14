@@ -3,7 +3,7 @@ import { MoviesModule } from './movies/movies.module';
 import { CastsModule } from './casts/casts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { envKeys, EnvTypes } from './constants';
+import { envKeys, EnvTypes } from './shared/constants';
 import { HealthModule } from './health/health.module';
 
 @Module({
