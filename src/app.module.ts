@@ -6,6 +6,7 @@ import { CastsModule } from './casts/casts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { envKeys, EnvTypes } from './constants';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { envKeys, EnvTypes } from './constants';
     }),
     MoviesModule,
     CastsModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

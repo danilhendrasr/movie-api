@@ -20,6 +20,7 @@ async function bootstrap() {
     SwaggerModule.createDocument(app, swaggerConfig),
   );
 
+  app.enableShutdownHooks();
   await app.listen(3000);
 }
 bootstrap();
