@@ -1,6 +1,6 @@
 import { Cast } from 'src/casts/casts.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Movie } from './movies.entity';
+import { Movie } from '../movies/movies.entity';
 
 @Entity()
 export class MovieToCast {
@@ -13,9 +13,11 @@ export class MovieToCast {
   @Column()
   castId: number;
 
-  @ManyToOne(() => Movie, (movie) => movie.movieToCasts)
+  @ManyToOne(() => Movie, (movie) => movie.movieToCasts, {
+    onDelete: 'CASCADE',
+  })
   movie: Movie;
 
-  @ManyToOne(() => Cast, (cast) => cast.movieToCasts)
+  @ManyToOne(() => Cast, (cast) => cast.movieToCasts, { onDelete: 'CASCADE' })
   cast: Cast;
 }

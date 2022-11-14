@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { envKeys, EnvTypes } from './shared/constants';
 import { HealthModule } from './health/health.module';
+import { MoviesToCastsModule } from './movies-to-casts/movies-to-casts.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { HealthModule } from './health/health.module';
     MoviesModule,
     CastsModule,
     HealthModule,
+    MoviesToCastsModule,
   ],
 })
 export class AppModule {}

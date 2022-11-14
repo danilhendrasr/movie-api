@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Seeder } from 'nestjs-seeder';
 import { Cast } from 'src/casts/casts.entity';
+import { Movie } from 'src/movies/movies.entity';
 import { Repository } from 'typeorm';
 import { MovieToCast } from './movies-to-casts.entity';
-import { Movie } from './movies.entity';
 
 @Injectable()
 export class MoviesToCastsSeeder implements Seeder {

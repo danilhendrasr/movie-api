@@ -3,7 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { seeder } from 'nestjs-seeder';
 import { CastsModule } from './casts/casts.module';
 import { CastsSeeder } from './casts/casts.seeder';
-import { MoviesToCastsSeeder } from './movies/movies-to-casts.seeder';
+import { MoviesToCastsModule } from './movies-to-casts/movies-to-casts.module';
+import { MoviesToCastsSeeder } from './movies-to-casts/movies-to-casts.seeder';
 import { MoviesModule } from './movies/movies.module';
 import { MoviesSeeder } from './movies/movies.seeder';
 import { envKeys } from './shared/constants';
@@ -29,5 +30,6 @@ seeder({
     }),
     MoviesModule,
     CastsModule,
+    MoviesToCastsModule,
   ],
 }).run([MoviesSeeder, CastsSeeder, MoviesToCastsSeeder]);

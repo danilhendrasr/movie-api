@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { Factory } from 'nestjs-seeder';
-import { MovieToCast } from 'src/movies/movies-to-casts.entity';
+import { MovieToCast } from 'src/movies-to-casts/movies-to-casts.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
