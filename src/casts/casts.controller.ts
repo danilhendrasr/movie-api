@@ -35,8 +35,17 @@ export class CastsController {
   }
 
   @Get(':id/movies')
-  async getCastsOfAMovie() {
-    return 'Get casts of a movie';
+  @ApiOperation({ summary: 'Get movies that a cast has played in.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully got the records.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Cast with the given ID cannot be found.',
+  })
+  async getMoviesOfACast(@Param('id') id: number) {
+    return this.castsService.getMoviesOfACast(id);
   }
 
   @Patch()

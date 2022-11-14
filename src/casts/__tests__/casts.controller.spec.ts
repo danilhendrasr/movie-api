@@ -65,4 +65,10 @@ describe('CastsController', () => {
       expect(controller.getOneCast(1)).resolves.toBe(oneCast);
     });
   });
+
+  describe('get movies of a cast', () => {
+    it('should return an array of movies', () => {
+      expect(controller.getMoviesOfACast(1)).resolves.toBe(moviesArray);
+    });
+  });
 });
