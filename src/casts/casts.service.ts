@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Movie } from 'src/movies/movies.entity';
 import { DatabaseError } from 'src/shared/errors/database.error';
 import { Repository } from 'typeorm';
 import { Cast } from './casts.entity';
@@ -8,10 +9,21 @@ import { Cast } from './casts.entity';
 export class CastsService {
   constructor(
     @InjectRepository(Cast) private castsRepository: Repository<Cast>,
+    @InjectRepository(Movie) private moviesRepository: Repository<Movie>,
   ) {}
 
   async find() {
     return await this.castsRepository.find();
+  }
+
+  async getMoviesOfACast(castId: number) {
+    await this.castsRepository.findOneByOrFail({ id: castId });
+    return await this.moviesRepository.find({
+      where: {
+        movieToCasts: { castId },
+      },
+      relations: { movieToCasts: true },
+    });
   }
 
   async findOne(id: number) {
