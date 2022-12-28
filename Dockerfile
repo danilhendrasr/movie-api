@@ -10,8 +10,10 @@ RUN pnpm i
 
 COPY . .
 
-RUN pnpm run build
+ENV NODE_ENV=production
+
+RUN pnpm build && chmod -R +x ./scripts
 
 EXPOSE 3000
 
-CMD ["pnpm", "start"]
+CMD ["./scripts/start.sh"]
