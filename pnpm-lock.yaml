@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@faker-js/faker': ^7.6.0
+  '@golevelup/ts-jest': ^0.3.4
   '@nestjs/cli': ^9.0.0
   '@nestjs/common': ^9.0.0
   '@nestjs/config': ^2.2.0
@@ -42,6 +43,7 @@ specifiers:
 
 dependencies:
   '@faker-js/faker': 7.6.0
+  '@golevelup/ts-jest': 0.3.4
   '@nestjs/common': 9.2.0_x6yqyveuahcdef4z4mxykmuv6a
   '@nestjs/config': 2.2.0_2kbkxfsrhtatemqz6dhv2pefvq
   '@nestjs/core': 9.2.0_jfowmhmgk7kwjudosrpv7e7liy
@@ -550,6 +552,10 @@ packages:
   /@faker-js/faker/7.6.0:
     resolution: {integrity: sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
+    dev: false
+
+  /@golevelup/ts-jest/0.3.4:
+    resolution: {integrity: sha512-UXas4+20gNmYfVR7DTJ9iRppy00o0ElqQrRQyn9cF3Gq90iM1Xx1lKvipTEe5NniHDD9FiMZNweOfB+9ebZRZA==}
     dev: false
 
   /@humanwhocodes/config-array/0.11.7:
