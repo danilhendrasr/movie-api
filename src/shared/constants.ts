@@ -1,5 +1,5 @@
 export const envKeys = {
-  envType: 'ENV',
+  envType: 'NODE_ENV',
   db: {
     host: 'DB_HOST',
     port: 'DB_PORT',
@@ -10,6 +10,6 @@ export const envKeys = {
 } as const;
 
 export enum EnvTypes {
-  DEV = 'DEV',
-  PROD = 'PROD',
+  DEV = 'development',
+  PROD = 'production',
 }

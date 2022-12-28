@@ -22,6 +22,7 @@ import { MoviesToCastsModule } from './movies-to-casts/movies-to-casts.module';
           password: configService.get(envKeys.db.password),
           database: configService.get(envKeys.db.name),
           autoLoadEntities: true,
+          logging: true,
           synchronize:
             configService.get<EnvTypes>(envKeys.envType) === EnvTypes.DEV
               ? true
