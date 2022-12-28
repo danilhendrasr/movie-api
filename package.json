@@ -20,7 +20,11 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed": "node dist/seeder",
-    "seed:refresh": "node dist/seeder --refresh"
+    "seed:refresh": "node dist/seeder --refresh",
+    "migration:generate": "npx typeorm-ts-node-commonjs migration:generate -d ./typeorm.config.ts",
+    "migration:create": "npx typeorm-ts-node-commonjs migration:create",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d ./typeorm.config.ts",
+    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d ./typeorm.config.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
