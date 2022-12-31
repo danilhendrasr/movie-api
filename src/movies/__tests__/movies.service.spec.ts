@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Cast } from 'src/casts/casts.entity';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, FindOptionsWhere, Repository } from 'typeorm';
 import { Movie } from '../movies.entity';
 import { MoviesService } from '../movies.service';
+import { createMock } from '@golevelup/ts-jest';
 
 const moviesArray: Movie[] = [
   {
@@ -31,6 +32,39 @@ const oneMovie: Movie = {
 describe('MoviesService', () => {
   let service: MoviesService;
   let moviesRepository: Repository<Movie>;
+  const movieRepoMock = createMock<Repository<Movie>>({
+    find: jest.fn(async () => {
+      return moviesArray;
+    }),
+    findOneByOrFail: jest.fn(async (params: FindOptionsWhere<Movie>) => {
+      if (params.id < 0) {
+        throw new EntityNotFoundError(Movie, 'Movie cannot be found.');
+      }
+      return oneMovie;
+    }),
+    save: jest.fn(async (entity: Partial<Movie>) => {
+      if (entity.id === undefined || entity.id === null) {
+        entity.id = Math.ceil(Math.random());
+      }
+
+      return entity as Movie;
+    }),
+    delete: jest.fn(async (id: number) => {
+      if (id < 0) {
+        throw new EntityNotFoundError(Movie, 'Movie cannot be found.');
+      }
+
+      return {
+        affected: 1,
+        raw: '',
+      };
+    }),
+  });
+
+  const castRepoMock = createMock<Repository<Cast>>({
+    find: jest.fn().mockResolvedValue(castsArray),
+    findOneByOrFail: jest.fn(),
+  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,21 +72,11 @@ describe('MoviesService', () => {
         MoviesService,
         {
           provide: getRepositoryToken(Movie),
-          useValue: {
-            find: jest.fn().mockResolvedValue(moviesArray),
-            findOneByOrFail: jest.fn().mockResolvedValue(oneMovie),
-            delete: jest.fn((id) => {
-              if (id === 1) return;
-              throw new Error('error');
-            }),
-          },
+          useValue: movieRepoMock,
         },
         {
           provide: getRepositoryToken(Cast),
-          useValue: {
-            find: jest.fn().mockResolvedValue(castsArray),
-            findOneByOrFail: jest.fn(),
-          },
+          useValue: castRepoMock,
         },
       ],
     }).compile();
@@ -65,29 +89,76 @@ describe('MoviesService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getAll()', () => {
+  describe('get many movies', () => {
     it('should return an array of movies', async () => {
-      const movies = await service.getAllMovies();
-      expect(movies).toEqual(moviesArray);
+      const result = await service.getAllMovies();
+      expect(movieRepoMock.find).toHaveBeenCalled();
+      expect(result).toEqual(moviesArray);
     });
   });
 
-  describe('getOne()', () => {
+  describe('get one movie', () => {
     it('should return a single movie', async () => {
-      const repoSpy = jest.spyOn(moviesRepository, 'findOneByOrFail');
-      expect(service.getOneMovie(1)).resolves.toEqual(oneMovie);
-      expect(repoSpy).toBeCalledWith({ id: 1 });
+      const result = await service.getOneMovie(1);
+      expect(movieRepoMock.findOneByOrFail).toBeCalledWith({ id: 1 });
+      expect(result).toEqual(oneMovie);
+    });
+
+    it('should throw EntityNotFoundError if movie not found', async () => {
+      const movieId = -1;
+      await expect(service.getOneMovie(movieId)).rejects.toBeInstanceOf(
+        EntityNotFoundError,
+      );
     });
   });
 
-  describe('getMovieCasts()', () => {
+  describe('get casts of a movie', () => {
     it('should return an array of casts', async () => {
       const casts = await service.getCasts(1);
+      expect(castRepoMock.find).toHaveBeenCalled();
       expect(casts).toEqual(castsArray);
+    });
+
+    it('should throw EntityNotFoundError if movie not found', async () => {
+      const movieId = -1;
+      await expect(service.getCasts(movieId)).rejects.toBeInstanceOf(
+        EntityNotFoundError,
+      );
     });
   });
 
-  describe('delete()', () => {
+  describe('create a new movie', () => {
+    it('should return full entity of the created movie', async () => {
+      const payload = { name: 'Testing' };
+      const result = await service.createNewMovie(payload);
+      expect(movieRepoMock.save).toBeCalledWith(payload);
+      expect(result).toEqual(
+        expect.objectContaining({
+          id: expect.any(Number),
+        }),
+      );
+    });
+  });
+
+  describe('update a movie', () => {
+    it('should return updated movie', async () => {
+      const movieId = 1;
+      const payload = { name: 'Testing' };
+      const expectedResult = { ...oneMovie, ...payload };
+      const result = await service.updateMovie(movieId, payload);
+      expect(movieRepoMock.save).toBeCalledWith(expectedResult);
+      expect(result).toEqual(expectedResult);
+    });
+
+    it('should throw EntityNotFoundError if movie not found', async () => {
+      const movieId = -1;
+      await expect(
+        service.updateMovie(movieId, { name: 'Testing' }),
+      ).rejects.toBeInstanceOf(EntityNotFoundError);
+    });
+  });
+
+  describe('delete a movie', () => {
     it('should call delete with the passed value', async () => {
       const deleteSpy = jest.spyOn(moviesRepository, 'delete');
       const retVal = await service.deleteMovie(1);
@@ -95,9 +166,11 @@ describe('MoviesService', () => {
       expect(retVal).toBeUndefined();
     });
 
-    it('should reject the promise if movie repo throws error', async () => {
-      const movieId = 2;
-      expect(service.deleteMovie(movieId)).rejects.toBeInstanceOf(Error);
+    it('should throw EntityNotFoundError if movie not found', async () => {
+      const movieId = -1;
+      await expect(service.deleteMovie(movieId)).rejects.toBeInstanceOf(
+        EntityNotFoundError,
+      );
     });
   });
 });

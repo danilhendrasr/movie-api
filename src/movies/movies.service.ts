@@ -35,13 +35,8 @@ export class MoviesService {
   }
 
   async deleteMovie(id: number) {
-    await this.moviesRepository.findOneByOrFail({ id });
-
-    try {
-      await this.moviesRepository.delete(id);
-    } catch (e) {
-      return Promise.reject(new Error('Failed deleting from database.'));
-    }
+    await this.getOneMovie(id);
+    await this.moviesRepository.delete(id);
   }
 
   async getCasts(movieId: number) {
