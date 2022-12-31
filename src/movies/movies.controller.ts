@@ -4,14 +4,18 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateMovieDTO } from './dto/create-movie.dto';
 import { UpdateMovieDTO } from './dto/update-movie.dto';
 import { MoviesService } from './movies.service';
+import { EntityNotFoundError } from 'typeorm';
 
 @ApiTags('Movies')
 @Controller({
@@ -41,8 +45,15 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async getOneMovie(@Param('id') id: number) {
-    return this.moviesService.getOneMovie(id);
+  async getOneMovie(@Param('id') id: number, @Res() res: Response) {
+    try {
+      const movie = await this.moviesService.getOneMovie(id);
+      return movie;
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        res.status(HttpStatus.NOT_FOUND).send();
+      }
+    }
   }
 
   @Patch(':id')
@@ -59,8 +70,18 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async updateMovie(@Param('id') id: number, @Body() payload: UpdateMovieDTO) {
-    return this.moviesService.updateMovie(id, payload);
+  async updateMovie(
+    @Param('id') id: number,
+    @Body() payload: UpdateMovieDTO,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.moviesService.updateMovie(id, payload);
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        res.status(HttpStatus.NOT_FOUND).send();
+      }
+    }
   }
 
   @Post()
@@ -88,8 +109,14 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async deleteMovie(@Param('id') id: number) {
-    await this.moviesService.deleteMovie(id);
+  async deleteMovie(@Param('id') id: number, @Res() res: Response) {
+    try {
+      await this.moviesService.deleteMovie(id);
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        res.status(HttpStatus.NOT_FOUND).send();
+      }
+    }
   }
 
   @Get(':id/casts')
@@ -102,7 +129,13 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async getMovieCasts(@Param('id') id: number) {
-    return this.moviesService.getMovieCasts(id);
+  async getMovieCasts(@Param('id') id: number, @Res() res: Response) {
+    try {
+      return this.moviesService.getCasts(id);
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        res.status(HttpStatus.NOT_FOUND).send();
+      }
+    }
   }
 }

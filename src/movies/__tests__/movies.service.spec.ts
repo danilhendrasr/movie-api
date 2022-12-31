@@ -82,7 +82,7 @@ describe('MoviesService', () => {
 
   describe('getMovieCasts()', () => {
     it('should return an array of casts', async () => {
-      const casts = await service.getMovieCasts(1);
+      const casts = await service.getCasts(1);
       expect(casts).toEqual(castsArray);
     });
   });

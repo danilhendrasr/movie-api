@@ -44,7 +44,7 @@ export class MoviesService {
     }
   }
 
-  async getMovieCasts(movieId: number) {
+  async getCasts(movieId: number) {
     await this.moviesRepository.findOneByOrFail({ id: movieId });
     return await this.castsRepository.find({
       where: { movieToCasts: { movieId } },
