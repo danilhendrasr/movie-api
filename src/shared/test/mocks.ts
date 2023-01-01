@@ -1,8 +1,12 @@
 import { createMock } from '@golevelup/ts-jest';
+import { Cast } from 'src/casts/casts.entity';
+import { CastsService } from 'src/casts/casts.service';
+import { CreateCastDTO } from 'src/casts/dto/create-cast.dto';
+import { UpdateCastDTO } from 'src/casts/dto/update-cast.dto';
 import { Movie } from 'src/movies/movies.entity';
 import { MoviesService } from 'src/movies/movies.service';
 import { EntityNotFoundError, FindOptionsWhere, Repository } from 'typeorm';
-import { castsArray, moviesArray, oneMovie } from './constants';
+import { castsArray, moviesArray, oneCast, oneMovie } from './constants';
 
 export const movieServiceMock = createMock<MoviesService>({
   getAllMovies: jest.fn().mockResolvedValue(moviesArray),
@@ -80,6 +84,39 @@ export const movieRepoMock = createMock<Repository<Movie>>({
     return {
       affected: 1,
       raw: '',
+    };
+  }),
+});
+
+export const castsServiceMock = createMock<CastsService>({
+  getCasts: jest.fn().mockResolvedValue(castsArray),
+  getOneCast: jest.fn(async (castId: number) => {
+    if (castId < 0) {
+      throw new EntityNotFoundError(
+        Cast,
+        'Cannot find Cast entity with ID: ' + castId,
+      );
+    }
+    return oneCast;
+  }),
+  getMoviesOfACast: jest.fn().mockResolvedValue(moviesArray),
+  createNewCast: jest.fn(async (payload: CreateCastDTO) => {
+    return {
+      id: 1,
+      ...payload,
+    };
+  }),
+  updateCast: jest.fn(async (id: number, payload: UpdateCastDTO) => {
+    if (id < 0) {
+      throw new EntityNotFoundError(
+        Cast,
+        'Cannot find Cast entity with ID: ' + id,
+      );
+    }
+
+    return {
+      ...oneCast,
+      ...payload,
     };
   }),
 });

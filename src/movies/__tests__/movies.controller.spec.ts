@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MoviesController } from '../movies.controller';
 import { MoviesService } from '../movies.service';
-import { getMockRes } from '@jest-mock/express';
 import { HttpStatus } from '@nestjs/common';
 import {
   moviesArray,
@@ -42,7 +41,7 @@ describe('MoviesController', () => {
   describe('get one', () => {
     it('should return a single movie', async () => {
       const movieId = 1;
-      const result = await controller.getOneMovie(movieId, getMockRes().res);
+      const result = await controller.getOneMovie(movieId, res);
       expect(service.getOneMovie).toHaveBeenCalledWith(movieId);
       expect(result).toEqual(oneMovie);
     });

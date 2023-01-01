@@ -1,4 +1,3 @@
-import { createMock } from '@golevelup/ts-jest';
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
@@ -7,49 +6,14 @@ import {
   moviesArray,
   oneCast,
 } from 'src/shared/test/constants';
-import { EntityNotFoundError } from 'typeorm';
+import { castsServiceMock } from 'src/shared/test/mocks';
 import { CastsController } from '../casts.controller';
-import { Cast } from '../casts.entity';
 import { CastsService } from '../casts.service';
-import { CreateCastDTO } from '../dto/create-cast.dto';
-import { UpdateCastDTO } from '../dto/update-cast.dto';
 
 describe('CastsController', () => {
   let controller: CastsController;
   let castsService: CastsService;
   const res = mockRes.res;
-  const castsServiceMock = createMock<CastsService>({
-    getCasts: jest.fn().mockResolvedValue(castsArray),
-    getOneCast: jest.fn(async (castId: number) => {
-      if (castId < 0) {
-        throw new EntityNotFoundError(
-          Cast,
-          'Cannot find Cast entity with ID: ' + castId,
-        );
-      }
-      return oneCast;
-    }),
-    getMoviesOfACast: jest.fn().mockResolvedValue(moviesArray),
-    createNewCast: jest.fn(async (payload: CreateCastDTO) => {
-      return {
-        id: 1,
-        ...payload,
-      };
-    }),
-    updateCast: jest.fn(async (id: number, payload: UpdateCastDTO) => {
-      if (id < 0) {
-        throw new EntityNotFoundError(
-          Cast,
-          'Cannot find Cast entity with ID: ' + id,
-        );
-      }
-
-      return {
-        ...oneCast,
-        ...payload,
-      };
-    }),
-  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
