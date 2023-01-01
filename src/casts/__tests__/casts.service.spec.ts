@@ -2,30 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Movie } from 'src/movies/movies.entity';
 import { DatabaseError } from 'src/shared/errors/database.error';
+import { castsArray, moviesArray, oneCast } from 'src/shared/test/constants';
 import { Repository } from 'typeorm';
 import { Cast } from '../casts.entity';
 import { CastsService } from '../casts.service';
-
-const moviesArray: Movie[] = [
-  {
-    id: 1,
-    name: 'The Girl On The Train',
-    rating: 3,
-    language: 'english',
-  },
-];
-
-const castsArray: Cast[] = [
-  {
-    id: 1,
-    name: 'Danil Hendra',
-  },
-];
-
-const oneCast: Cast = {
-  id: 1,
-  name: 'Danil Hendra',
-};
 
 describe('CastsService', () => {
   let service: CastsService;

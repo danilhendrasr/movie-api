@@ -1,65 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Cast } from 'src/casts/casts.entity';
-import { EntityNotFoundError, FindOptionsWhere, Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { Movie } from '../movies.entity';
 import { MoviesService } from '../movies.service';
 import { createMock } from '@golevelup/ts-jest';
-
-const moviesArray: Movie[] = [
-  {
-    id: 1,
-    name: 'The Girl On The Train',
-    rating: 3,
-    language: 'english',
-  },
-];
-
-const castsArray: Cast[] = [
-  {
-    id: 1,
-    name: 'Danil Hendra',
-  },
-];
-
-const oneMovie: Movie = {
-  id: 1,
-  name: 'The Girl On The Train',
-  rating: 3,
-  language: 'english',
-};
+import { moviesArray, oneMovie, castsArray } from 'src/shared/test/constants';
+import { movieRepoMock } from 'src/shared/test/mocks';
 
 describe('MoviesService', () => {
   let service: MoviesService;
   let moviesRepository: Repository<Movie>;
-  const movieRepoMock = createMock<Repository<Movie>>({
-    find: jest.fn(async () => {
-      return moviesArray;
-    }),
-    findOneByOrFail: jest.fn(async (params: FindOptionsWhere<Movie>) => {
-      if (params.id < 0) {
-        throw new EntityNotFoundError(Movie, 'Movie cannot be found.');
-      }
-      return oneMovie;
-    }),
-    save: jest.fn(async (entity: Partial<Movie>) => {
-      if (entity.id === undefined || entity.id === null) {
-        entity.id = Math.ceil(Math.random());
-      }
-
-      return entity as Movie;
-    }),
-    delete: jest.fn(async (id: number) => {
-      if (id < 0) {
-        throw new EntityNotFoundError(Movie, 'Movie cannot be found.');
-      }
-
-      return {
-        affected: 1,
-        raw: '',
-      };
-    }),
-  });
 
   const castRepoMock = createMock<Repository<Cast>>({
     find: jest.fn().mockResolvedValue(castsArray),

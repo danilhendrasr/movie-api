@@ -1,96 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Cast } from 'src/casts/casts.entity';
-import { EntityNotFoundError } from 'typeorm';
 import { MoviesController } from '../movies.controller';
-import { Movie } from '../movies.entity';
 import { MoviesService } from '../movies.service';
 import { getMockRes } from '@jest-mock/express';
 import { HttpStatus } from '@nestjs/common';
-
-const moviesArray: Movie[] = [
-  {
-    id: 1,
-    name: 'The Girl On The Train',
-    rating: 3,
-    language: 'english',
-  },
-];
-
-const castsArray: Cast[] = [
-  {
-    id: 1,
-    name: 'Danil Hendra',
-  },
-];
-
-const oneMovie: Movie = {
-  id: 1,
-  name: 'The Girl On The Train',
-  rating: 3,
-  language: 'english',
-};
+import {
+  moviesArray,
+  oneMovie,
+  castsArray,
+  mockRes,
+} from 'src/shared/test/constants';
+import { movieServiceMock } from 'src/shared/test/mocks';
 
 describe('MoviesController', () => {
   let controller: MoviesController;
   let service: MoviesService;
-  const mockRes = getMockRes();
   const res = mockRes.res;
-
-  const serviceMocks: Record<keyof MoviesService, any> = {
-    getAllMovies: jest.fn().mockResolvedValue(moviesArray),
-    getOneMovie: jest.fn((id: number) => {
-      if (id < 0) {
-        throw new EntityNotFoundError(
-          Movie,
-          'Could not find entity of type matching blabla.',
-        );
-      }
-
-      return oneMovie;
-    }),
-    getCasts: jest.fn((id: number) => {
-      if (id < 0) {
-        throw new EntityNotFoundError(
-          Movie,
-          'Could not find entity of type matching blabla.',
-        );
-      }
-
-      return castsArray;
-    }),
-    updateMovie: jest.fn((id: number, payload: Partial<Movie>) => {
-      if (id < 0) {
-        throw new EntityNotFoundError(
-          Movie,
-          'Could not find entity of type matching blabla.',
-        );
-      }
-
-      return {
-        ...oneMovie,
-        ...payload,
-      };
-    }),
-    createNewMovie: jest.fn((movie: Partial<Movie>) => {
-      return {
-        id: 1,
-        ...movie,
-      };
-    }),
-    deleteMovie: jest.fn((id: number) => {
-      if (id < 0) {
-        throw new EntityNotFoundError(
-          Movie,
-          'Could not find entity of type matching blabla.',
-        );
-      }
-    }),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MoviesController],
-      providers: [{ provide: MoviesService, useValue: serviceMocks }],
+      providers: [{ provide: MoviesService, useValue: movieServiceMock }],
     }).compile();
 
     controller = module.get<MoviesController>(MoviesController);

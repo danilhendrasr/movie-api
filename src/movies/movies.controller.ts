@@ -133,7 +133,7 @@ export class MoviesController {
   })
   async getMovieCasts(@Param('id') id: number, @Res() res: Response) {
     try {
-      return this.moviesService.getCasts(id);
+      return await this.moviesService.getCasts(id);
     } catch (error) {
       if (error instanceof EntityNotFoundError) {
         res.status(HttpStatus.NOT_FOUND).send();
