@@ -70,14 +70,8 @@ describe('MoviesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MoviesService,
-        {
-          provide: getRepositoryToken(Movie),
-          useValue: movieRepoMock,
-        },
-        {
-          provide: getRepositoryToken(Cast),
-          useValue: castRepoMock,
-        },
+        { provide: getRepositoryToken(Movie), useValue: movieRepoMock },
+        { provide: getRepositoryToken(Cast), useValue: castRepoMock },
       ],
     }).compile();
 
@@ -146,6 +140,7 @@ describe('MoviesService', () => {
       const payload = { name: 'Testing' };
       const expectedResult = { ...oneMovie, ...payload };
       const result = await service.updateMovie(movieId, payload);
+      expect(movieRepoMock.findOneByOrFail).toBeCalledWith({ id: movieId });
       expect(movieRepoMock.save).toBeCalledWith(expectedResult);
       expect(result).toEqual(expectedResult);
     });
@@ -161,9 +156,9 @@ describe('MoviesService', () => {
   describe('delete a movie', () => {
     it('should call delete with the passed value', async () => {
       const deleteSpy = jest.spyOn(moviesRepository, 'delete');
-      const retVal = await service.deleteMovie(1);
+      const result = await service.deleteMovie(1);
       expect(deleteSpy).toBeCalledWith(1);
-      expect(retVal).toBeUndefined();
+      expect(result).toBeUndefined();
     });
 
     it('should throw EntityNotFoundError if movie not found', async () => {
