@@ -76,7 +76,7 @@ export class MoviesController {
     @Res() res: Response,
   ) {
     try {
-      await this.moviesService.updateMovie(id, payload);
+      return await this.moviesService.updateMovie(id, payload);
     } catch (error) {
       if (error instanceof EntityNotFoundError) {
         res.status(HttpStatus.NOT_FOUND).send();
@@ -94,8 +94,9 @@ export class MoviesController {
     status: 400,
     description: 'Request body is not valid, please recheck.',
   })
+  @HttpCode(HttpStatus.CREATED)
   async createMovie(@Body() payload: CreateMovieDTO) {
-    return this.moviesService.createNewMovie(payload);
+    return await this.moviesService.createNewMovie(payload);
   }
 
   @Delete(':id')
@@ -112,6 +113,7 @@ export class MoviesController {
   async deleteMovie(@Param('id') id: number, @Res() res: Response) {
     try {
       await this.moviesService.deleteMovie(id);
+      res.status(HttpStatus.NO_CONTENT).send();
     } catch (error) {
       if (error instanceof EntityNotFoundError) {
         res.status(HttpStatus.NOT_FOUND).send();
