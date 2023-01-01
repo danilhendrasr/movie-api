@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Movie } from 'src/movies/movies.entity';
-import { DatabaseError } from 'src/shared/errors/database.error';
 import { Repository } from 'typeorm';
 import { Cast } from './casts.entity';
 
@@ -47,11 +46,6 @@ export class CastsService {
 
   async deleteCast(id: number) {
     await this.castsRepository.findOneByOrFail({ id });
-
-    try {
-      await this.castsRepository.delete(id);
-    } catch (e) {
-      return Promise.reject(new DatabaseError('Failed deleting cast.'));
-    }
+    await this.castsRepository.delete(id);
   }
 }

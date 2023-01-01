@@ -97,6 +97,7 @@ export const castsServiceMock = createMock<CastsService>({
         'Cannot find Cast entity with ID: ' + castId,
       );
     }
+
     return oneCast;
   }),
   getMoviesOfACast: jest.fn().mockResolvedValue(moviesArray),
@@ -118,5 +119,39 @@ export const castsServiceMock = createMock<CastsService>({
       ...oneCast,
       ...payload,
     };
+  }),
+});
+
+export const castRepoMock = createMock<Repository<Cast>>({
+  find: jest.fn().mockResolvedValue(castsArray),
+  findOneByOrFail: jest.fn(async (params: FindOptionsWhere<Cast>) => {
+    if (params.id < 0) {
+      throw new EntityNotFoundError(
+        Cast,
+        'Cannot find Cast entity with ID: ' + params.id,
+      );
+    }
+
+    return oneCast;
+  }),
+  delete: jest.fn(async (id: number) => {
+    if (id < 0) {
+      throw new EntityNotFoundError(
+        Cast,
+        'Cannot find Cast entity with ID: ' + id,
+      );
+    }
+
+    return {
+      affected: 1,
+      raw: '',
+    };
+  }),
+  save: jest.fn(async (entity: Partial<Cast>) => {
+    if (entity.id === undefined || entity.id === null) {
+      entity.id = Math.ceil(Math.random());
+    }
+
+    return entity as Cast;
   }),
 });

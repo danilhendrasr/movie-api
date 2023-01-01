@@ -4,18 +4,12 @@ import { Cast } from 'src/casts/casts.entity';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { Movie } from '../movies.entity';
 import { MoviesService } from '../movies.service';
-import { createMock } from '@golevelup/ts-jest';
 import { moviesArray, oneMovie, castsArray } from 'src/shared/test/constants';
-import { movieRepoMock } from 'src/shared/test/mocks';
+import { castRepoMock, movieRepoMock } from 'src/shared/test/mocks';
 
 describe('MoviesService', () => {
   let service: MoviesService;
   let moviesRepository: Repository<Movie>;
-
-  const castRepoMock = createMock<Repository<Cast>>({
-    find: jest.fn().mockResolvedValue(castsArray),
-    findOneByOrFail: jest.fn(),
-  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
