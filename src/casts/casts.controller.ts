@@ -45,7 +45,10 @@ export class CastsController {
     status: 404,
     description: 'Cast with the given ID cannot be found.',
   })
-  async getOneCast(@Param('id') id: number, @Res() res: Response) {
+  async getOneCast(
+    @Param('id') id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       return await this.castsService.getOneCast(id);
     } catch (err) {
@@ -65,7 +68,10 @@ export class CastsController {
     status: 404,
     description: 'Cast with the given ID cannot be found.',
   })
-  async getMoviesOfACast(@Param('id') id: number, @Res() res: Response) {
+  async getMoviesOfACast(
+    @Param('id') id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       return await this.castsService.getMoviesOfACast(id);
     } catch (err) {
@@ -92,7 +98,7 @@ export class CastsController {
   async updateCast(
     @Param('id') id: number,
     @Body() payload: UpdateCastDTO,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     try {
       return await this.castsService.updateCast(id, payload);
@@ -128,7 +134,10 @@ export class CastsController {
     status: 404,
     description: 'A cast with the given ID cannot be found.',
   })
-  async deleteCast(@Param('id') id: number, @Res() res: Response) {
+  async deleteCast(
+    @Param('id') id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       return await this.castsService.deleteCast(id);
     } catch (err) {

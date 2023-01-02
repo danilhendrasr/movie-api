@@ -45,7 +45,10 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async getOneMovie(@Param('id') id: number, @Res() res: Response) {
+  async getOneMovie(
+    @Param('id') id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       const movie = await this.moviesService.getOneMovie(id);
       return movie;
@@ -73,7 +76,7 @@ export class MoviesController {
   async updateMovie(
     @Param('id') id: number,
     @Body() payload: UpdateMovieDTO,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     try {
       return await this.moviesService.updateMovie(id, payload);
@@ -110,7 +113,10 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async deleteMovie(@Param('id') id: number, @Res() res: Response) {
+  async deleteMovie(
+    @Param('id') id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       await this.moviesService.deleteMovie(id);
       res.status(HttpStatus.NO_CONTENT).send();
@@ -131,7 +137,10 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async getMovieCasts(@Param('id') id: number, @Res() res: Response) {
+  async getMovieCasts(
+    @Param('id') id: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       return await this.moviesService.getCasts(id);
     } catch (error) {
