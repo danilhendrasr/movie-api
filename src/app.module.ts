@@ -24,7 +24,7 @@ import { MoviesToCastsModule } from './movies-to-casts/movies-to-casts.module';
           autoLoadEntities: true,
           logging: true,
           synchronize:
-            configService.get<EnvTypes>(envKeys.envType) === EnvTypes.DEV
+            configService.get<EnvTypes>(envKeys.envType) !== EnvTypes.PROD
               ? true
               : false,
         };
