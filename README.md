@@ -14,7 +14,7 @@ A simple but well-organized movie API built using Nest.js and MySQL. Requirement
     pnpm install
     ```
 3. Copy the `.env.example` file and rename it to `.env`, adjust the content according
-   to your database configurations.
+   to your desired configurations.
 4. Run the dev server in watch mode.
     ```bash
     pnpm run start:dev
@@ -25,30 +25,33 @@ A simple but well-organized movie API built using Nest.js and MySQL. Requirement
     ```
 6. The API will be accessible at http://localhost:3000, documentation is available at http://localhost:3000/docs.
 
-## Deploying
-Run the following to get the docker compose up and running.
+### Health Check
+This API features a simple health check to make it easier to see the status of the system including its dependencies such as the database. Go to http://localhost:3000/health to see this feature.
+
+## Testing
+There are 2 kinds of tests provided for this API, which are unit tests and end-to-end tests.
+To run unit tests:
 ```bash
-docker compose -d up
+pnpm test
 ```
 
-The API will be accessible at http://localhost:3000, documentation is available at http://localhost:3000/docs.
+As for the end-to-end tests, I recommend running it using docker compose to save
+the hassle of setting things up manually. To run end-to-end tests:
+```bash
+docker compose -f docker/docker-compose.test.yml up --build --abort-on-container-exit
+```
 
-## Features Overview
-There are basically 2 main routes and 1 additional route:
-### Main Routes
-There are 2 main routes and 1 additional route, which are:
+## Deploying
+For seamless deployment, run the api using docker compose:
+```bash
+docker compose -f docker/docker-compose.yml up -d --build
+```
+
+## Routes
+There are 2 main routes, which are:
 | Route     | Usage                                                                                              |
 |-----------|----------------------------------------------------------------------------------------------------|
 | `/movies` | Manage movies such as getting movies, getting one movie, listing all casts, create new movie, etc. |
 | `/casts`  | Manage movies such as getting movies, getting one movie, listing all casts, create new movie, etc. |
 
 The main routes's URL are prefixed with the API version, so in order to access it we acces the following URLs respectively: `v1/movies` and `v1/casts`.
-
-### Testing
-This code base feature unit testings to ensure bugs can be caught faster in the development loop. Run the following if you want to check out the tests
-```bash
-pnpm test
-```
-
-### Health Check
-This API features a simple health check to make it easier to see the status of the system including its dependencies such as the database. Go to http://localhost:3000/health to see this feature.
