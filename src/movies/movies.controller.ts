@@ -6,8 +6,8 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Patch,
   Post,
+  Put,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -59,7 +59,7 @@ export class MoviesController {
     }
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiOperation({ summary: 'Update a movie.' })
   @ApiResponse({
     status: 200,
@@ -83,7 +83,10 @@ export class MoviesController {
     } catch (error) {
       if (error instanceof EntityNotFoundError) {
         res.status(HttpStatus.NOT_FOUND).send();
+        return;
       }
+
+      throw error;
     }
   }
 
