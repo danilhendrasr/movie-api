@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cast } from 'src/casts/casts.entity';
+import { InvalidPayloadError } from 'src/shared/errors/invalid-payload.error';
 import { Repository } from 'typeorm';
 import { Movie } from './movies.entity';
 
@@ -22,6 +23,10 @@ export class MoviesService {
   }
 
   async createNewMovie(payload: Omit<Movie, 'id' | 'movieToCasts'>) {
+    if (!('name' in payload)) {
+      throw new InvalidPayloadError();
+    }
+
     return await this.moviesRepository.save(payload);
   }
 
