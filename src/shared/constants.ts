@@ -1,3 +1,6 @@
+import { EntityNotFoundExceptionFilter } from './filters/entity-not-found-exception.filter';
+import { InvalidPayloadExceptionFilter } from './filters/invalid-payload.filter';
+
 export const envKeys = {
   envType: 'NODE_ENV',
   db: {
@@ -13,3 +16,8 @@ export enum EnvTypes {
   DEV = 'development',
   PROD = 'production',
 }
+
+export const globalFilters = [
+  new EntityNotFoundExceptionFilter(),
+  new InvalidPayloadExceptionFilter(),
+];
