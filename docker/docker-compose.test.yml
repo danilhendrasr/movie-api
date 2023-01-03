@@ -1,4 +1,4 @@
-version: '3'
+version: '3.3'
 name: movie-api-e2e-test
 services:
   api:
@@ -9,6 +9,11 @@ services:
       - "3000:3000"
     environment:
       WAIT_HOSTS: db:3306
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_NAME: movie-api
     depends_on:
       - db
   db:
