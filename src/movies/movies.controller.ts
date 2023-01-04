@@ -8,14 +8,11 @@ import {
   Param,
   Post,
   Put,
-  Res,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateMovieDTO } from './dto/create-movie.dto';
 import { UpdateMovieDTO } from './dto/update-movie.dto';
 import { MoviesService } from './movies.service';
-import { EntityNotFoundError } from 'typeorm';
 
 @ApiTags('Movies')
 @Controller({
@@ -32,7 +29,7 @@ export class MoviesController {
     description: 'Successfully got the records.',
   })
   async getMovies() {
-    return this.moviesService.getAllMovies();
+    return await this.moviesService.getAllMovies();
   }
 
   @Get(':id')
@@ -45,18 +42,8 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async getOneMovie(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    try {
-      const movie = await this.moviesService.getOneMovie(id);
-      return movie;
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        res.status(HttpStatus.NOT_FOUND).send();
-      }
-    }
+  async getOneMovie(@Param('id') id: number) {
+    return await this.moviesService.getOneMovie(id);
   }
 
   @Put(':id')
@@ -73,21 +60,8 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async updateMovie(
-    @Param('id') id: number,
-    @Body() payload: UpdateMovieDTO,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    try {
-      return await this.moviesService.updateMovie(id, payload);
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        res.status(HttpStatus.NOT_FOUND).send();
-        return;
-      }
-
-      throw error;
-    }
+  async updateMovie(@Param('id') id: number, @Body() payload: UpdateMovieDTO) {
+    return await this.moviesService.updateMovie(id, payload);
   }
 
   @Post()
@@ -116,18 +90,9 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async deleteMovie(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    try {
-      await this.moviesService.deleteMovie(id);
-      res.status(HttpStatus.NO_CONTENT).send();
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        res.status(HttpStatus.NOT_FOUND).send();
-      }
-    }
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteMovie(@Param('id') id: number) {
+    await this.moviesService.deleteMovie(id);
   }
 
   @Get(':id/casts')
@@ -140,16 +105,7 @@ export class MoviesController {
     status: 404,
     description: "Movie with the given ID can't be found",
   })
-  async getMovieCasts(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    try {
-      return await this.moviesService.getCasts(id);
-    } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        res.status(HttpStatus.NOT_FOUND).send();
-      }
-    }
+  async getMovieCasts(@Param('id') id: number) {
+    return await this.moviesService.getCasts(id);
   }
 }

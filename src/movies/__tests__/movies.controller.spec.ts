@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MoviesController } from '../movies.controller';
 import { MoviesService } from '../movies.service';
-import { HttpStatus } from '@nestjs/common';
 import {
   moviesArray,
   oneMovie,
@@ -9,11 +8,11 @@ import {
   mockRes,
 } from 'src/shared/test/constants';
 import { movieServiceMock } from 'src/shared/test/mocks';
+import { EntityNotFoundError } from 'typeorm';
 
 describe('MoviesController', () => {
   let controller: MoviesController;
   let service: MoviesService;
-  const res = mockRes.res;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -41,32 +40,34 @@ describe('MoviesController', () => {
   describe('get one', () => {
     it('should return a single movie', async () => {
       const movieId = 1;
-      const result = await controller.getOneMovie(movieId, res);
+      const result = await controller.getOneMovie(movieId);
       expect(service.getOneMovie).toHaveBeenCalledWith(movieId);
       expect(result).toEqual(oneMovie);
     });
 
-    it('should set status code to 404 if movie cannot be found', async () => {
+    it('should throw EntityNotFoundError if movie cannot be found', async () => {
       const movieId = -1;
-      await controller.getOneMovie(movieId, res);
+      await expect(controller.getOneMovie(movieId)).rejects.toThrow(
+        EntityNotFoundError,
+      );
       expect(service.getOneMovie).toHaveBeenCalledWith(movieId);
-      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
     });
   });
 
   describe('get casts of a movie', () => {
     it('should return an array of casts', async () => {
       const movieId = 1;
-      const result = await controller.getMovieCasts(movieId, res);
+      const result = await controller.getMovieCasts(movieId);
       expect(service.getCasts).toHaveBeenCalledWith(movieId);
       expect(result).toEqual(castsArray);
     });
 
-    it('should set status code to 404 if movie cannot be found', async () => {
+    it('should throw EntityNotFoundError if movie cannot be found', async () => {
       const movieId = -1;
-      await controller.getMovieCasts(movieId, res);
+      await expect(controller.getMovieCasts(movieId)).rejects.toThrow(
+        EntityNotFoundError,
+      );
       expect(service.getCasts).toHaveBeenCalledWith(movieId);
-      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
     });
   });
 
@@ -84,33 +85,34 @@ describe('MoviesController', () => {
   describe('update a movie', () => {
     it('should return the updated movie', async () => {
       const payload = { name: 'Batman: Vengeance' };
-      const result = await controller.updateMovie(1, payload, res);
+      const result = await controller.updateMovie(1, payload);
       expect(service.updateMovie).toBeCalledWith(1, payload);
       expect(result).toEqual({ ...oneMovie, ...payload });
     });
 
-    it('should set status code to 404 if movie cannot be found', async () => {
+    it('should throw EntityNotFoundError if movie cannot be found', async () => {
       const movieId = -1;
       const payload = { name: 'Batman Vengeance' };
-      await controller.updateMovie(movieId, payload, res);
+      await expect(controller.updateMovie(movieId, payload)).rejects.toThrow(
+        EntityNotFoundError,
+      );
       expect(service.updateMovie).toHaveBeenCalledWith(movieId, payload);
-      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
     });
   });
 
   describe('delete a movie', () => {
     it('should set status 204 and have no json response', async () => {
-      const result = await controller.deleteMovie(1, res);
+      const result = await controller.deleteMovie(1);
       expect(service.deleteMovie).toBeCalledWith(1);
       expect(result).toBeUndefined();
-      expect(res.status).toHaveBeenCalledWith(HttpStatus.NO_CONTENT);
     });
 
-    it('should set status code to 404 if movie cannot be found', async () => {
+    it('should throw EntityNotFoundError if movie cannot be found', async () => {
       const movieId = -1;
-      await controller.deleteMovie(movieId, res);
+      await expect(controller.deleteMovie(movieId)).rejects.toThrow(
+        EntityNotFoundError,
+      );
       expect(service.deleteMovie).toHaveBeenCalledWith(movieId);
-      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
     });
   });
 });
