@@ -1,6 +1,10 @@
 # Movie API
 A simple but well-organized movie API built using Nest.js and MySQL. Requirements can be accessed at https://bitbucket.org/campaignid/sd-backend-screening-test/src/master/.
 
+Originally this project was my technical assignment project for Campaign.com's backend engineer internship application,
+but then I expanded it a little bit by adding more extensive unit tests, CI pipeline, migration mechanism,
+e2e tests, as well as fixes some container-related issues.
+
 ## Developing
 ### Prerequisites
 - Node.js
