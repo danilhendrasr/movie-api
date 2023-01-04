@@ -4,18 +4,14 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpStatus,
   Param,
   Post,
   Put,
-  Res,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CastsService } from './casts.service';
 import { CreateCastDTO } from './dto/create-cast.dto';
 import { UpdateCastDTO } from './dto/update-cast.dto';
-import { Response } from 'express';
-import { EntityNotFoundError } from 'typeorm';
 
 @ApiTags('Casts')
 @Controller({
@@ -45,17 +41,8 @@ export class CastsController {
     status: 404,
     description: 'Cast with the given ID cannot be found.',
   })
-  async getOneCast(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    try {
-      return await this.castsService.getOneCast(id);
-    } catch (err) {
-      if (err instanceof EntityNotFoundError) {
-        res.status(HttpStatus.NOT_FOUND).send();
-      }
-    }
+  async getOneCast(@Param('id') id: number) {
+    return await this.castsService.getOneCast(id);
   }
 
   @Get(':id/movies')
@@ -68,17 +55,8 @@ export class CastsController {
     status: 404,
     description: 'Cast with the given ID cannot be found.',
   })
-  async getMoviesOfACast(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    try {
-      return await this.castsService.getMoviesOfACast(id);
-    } catch (err) {
-      if (err instanceof EntityNotFoundError) {
-        res.status(HttpStatus.NOT_FOUND).send();
-      }
-    }
+  async getMoviesOfACast(@Param('id') id: number) {
+    return await this.castsService.getMoviesOfACast(id);
   }
 
   @Put(':id')
@@ -95,18 +73,8 @@ export class CastsController {
     status: 404,
     description: 'A cast with the given ID cannot be found.',
   })
-  async updateCast(
-    @Param('id') id: number,
-    @Body() payload: UpdateCastDTO,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    try {
-      return await this.castsService.updateCast(id, payload);
-    } catch (err) {
-      if (err instanceof EntityNotFoundError) {
-        res.status(HttpStatus.NOT_FOUND).send();
-      }
-    }
+  async updateCast(@Param('id') id: number, @Body() payload: UpdateCastDTO) {
+    return await this.castsService.updateCast(id, payload);
   }
 
   @Post()
@@ -120,7 +88,7 @@ export class CastsController {
     description: 'Request body is not valid, please recheck.',
   })
   async createCast(@Body() payload: CreateCastDTO) {
-    return this.castsService.createNewCast(payload);
+    return await this.castsService.createNewCast(payload);
   }
 
   @Delete(':id')
@@ -134,16 +102,7 @@ export class CastsController {
     status: 404,
     description: 'A cast with the given ID cannot be found.',
   })
-  async deleteCast(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    try {
-      return await this.castsService.deleteCast(id);
-    } catch (err) {
-      if (err instanceof EntityNotFoundError) {
-        res.status(HttpStatus.NOT_FOUND).send();
-      }
-    }
+  async deleteCast(@Param('id') id: number) {
+    return await this.castsService.deleteCast(id);
   }
 }

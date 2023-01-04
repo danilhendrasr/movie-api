@@ -100,7 +100,16 @@ export const castsServiceMock = createMock<CastsService>({
 
     return oneCast;
   }),
-  getMoviesOfACast: jest.fn().mockResolvedValue(moviesArray),
+  getMoviesOfACast: jest.fn(async (castId: number) => {
+    if (castId < 0) {
+      throw new EntityNotFoundError(
+        Cast,
+        'Cannot find Cast entity with ID: ' + castId,
+      );
+    }
+
+    return moviesArray;
+  }),
   createNewCast: jest.fn(async (payload: CreateCastDTO) => {
     return {
       id: 1,
@@ -119,6 +128,14 @@ export const castsServiceMock = createMock<CastsService>({
       ...oneCast,
       ...payload,
     };
+  }),
+  deleteCast: jest.fn(async (id: number) => {
+    if (id < 0) {
+      throw new EntityNotFoundError(
+        Cast,
+        'Cannot find Cast entity with ID: ' + id,
+      );
+    }
   }),
 });
 

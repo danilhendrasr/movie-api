@@ -1,19 +1,13 @@
-import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  castsArray,
-  mockRes,
-  moviesArray,
-  oneCast,
-} from 'src/shared/test/constants';
+import { castsArray, moviesArray, oneCast } from 'src/shared/test/constants';
 import { castsServiceMock } from 'src/shared/test/mocks';
+import { EntityNotFoundError } from 'typeorm';
 import { CastsController } from '../casts.controller';
 import { CastsService } from '../casts.service';
 
 describe('CastsController', () => {
   let controller: CastsController;
   let castsService: CastsService;
-  const res = mockRes.res;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,31 +34,33 @@ describe('CastsController', () => {
   describe('get one', () => {
     it('should return one cast', async () => {
       const castId = 1;
-      const result = await controller.getOneCast(castId, res);
+      const result = await controller.getOneCast(castId);
       expect(castsService.getOneCast).toHaveBeenCalledWith(castId);
       expect(result).toEqual(oneCast);
     });
 
-    it('should set status code to 404 if cast cannot be found', async () => {
+    it('should throw EntityNotFoundError if cast cannot be found', async () => {
       const castId = -1;
-      await controller.getOneCast(castId, res);
+      await expect(controller.getOneCast(castId)).rejects.toThrow(
+        EntityNotFoundError,
+      );
       expect(castsService.getOneCast).toHaveBeenCalledWith(castId);
-      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
     });
   });
 
   describe('get movies of a cast', () => {
     it('should return an array of movies', async () => {
-      const result = await controller.getMoviesOfACast(1, res);
+      const result = await controller.getMoviesOfACast(1);
       expect(castsService.getMoviesOfACast).toHaveBeenCalled();
       expect(result).toEqual(moviesArray);
     });
 
-    it('should set status code to 404 if cast cannot be found', async () => {
+    it('should throw EntityNotFoundError if cast cannot be found', async () => {
       const castId = -1;
-      await controller.getMoviesOfACast(castId, res);
+      await expect(controller.getMoviesOfACast(castId)).rejects.toThrow(
+        EntityNotFoundError,
+      );
       expect(castsService.getMoviesOfACast).toHaveBeenCalledWith(castId);
-      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
     });
   });
 
@@ -83,32 +79,34 @@ describe('CastsController', () => {
     it('should return the updated cast', async () => {
       const castId = 1;
       const payload = { name: 'Admin' };
-      const result = await controller.updateCast(castId, payload, res);
+      const result = await controller.updateCast(castId, payload);
       expect(castsService.updateCast).toBeCalledWith(castId, payload);
       expect(result).toEqual({ ...oneCast, ...payload });
     });
 
-    it('should set status code to 404 if cast cannot be found', async () => {
+    it('should throw EntityNotFoundError if cast cannot be found', async () => {
       const payload = { name: 'Admin' };
       const castId = -1;
-      await controller.updateCast(castId, payload, res);
+      await expect(controller.updateCast(castId, payload)).rejects.toThrow(
+        EntityNotFoundError,
+      );
       expect(castsService.updateCast).toHaveBeenCalledWith(castId, payload);
-      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
     });
   });
 
   describe('delete a cast', () => {
     it('should call delete a cast service with given payload', () => {
       const createMovieServiceSpy = jest.spyOn(castsService, 'deleteCast');
-      controller.deleteCast(1, res);
+      controller.deleteCast(1);
       expect(createMovieServiceSpy).toBeCalledWith(1);
     });
 
-    it('should set status code to 404 if cast cannot be found', async () => {
+    it('should throw EntityNotFoundError if cast cannot be found', async () => {
       const castId = -1;
-      await controller.deleteCast(castId, res);
+      await expect(controller.deleteCast(castId)).rejects.toThrow(
+        EntityNotFoundError,
+      );
       expect(castsService.deleteCast).toHaveBeenCalledWith(castId);
-      expect(res.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
     });
   });
 });
