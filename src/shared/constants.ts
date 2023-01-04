@@ -1,3 +1,4 @@
+import { DatabaseExceptionFilter } from './filters/database-exception.filter';
 import { EntityNotFoundExceptionFilter } from './filters/entity-not-found-exception.filter';
 import { InvalidPayloadExceptionFilter } from './filters/invalid-payload.filter';
 
@@ -20,4 +21,5 @@ export enum EnvTypes {
 export const globalFilters = [
   new EntityNotFoundExceptionFilter(),
   new InvalidPayloadExceptionFilter(),
+  new DatabaseExceptionFilter(),
 ];
