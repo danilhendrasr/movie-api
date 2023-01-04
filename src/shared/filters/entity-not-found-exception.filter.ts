@@ -15,6 +15,6 @@ export class EntityNotFoundExceptionFilter implements ExceptionFilter {
   public catch(exception: EntityNotFoundError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    return response.status(HttpStatus.NOT_FOUND);
+    return response.status(HttpStatus.NOT_FOUND).send();
   }
 }
